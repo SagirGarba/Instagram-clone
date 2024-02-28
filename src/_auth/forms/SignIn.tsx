@@ -12,7 +12,7 @@ import {
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { useForm } from "react-hook-form";
-import { signupValidation as signinValidation } from "../../lib/validation";
+import { signinValidation as signinValidation } from "../../lib/validation";
 import { z } from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useSignInAccount } from "../../lib/react-query/queriesAndMutations";
@@ -23,7 +23,7 @@ const SignIn = () => {
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
   const navigate = useNavigate();
 
-  const { mutateAsync: signInAccount, isPending } = useSignInAccount();
+  const { mutateAsync: signInAccount } = useSignInAccount();
 
   const form = useForm<z.infer<typeof signinValidation>>({
     resolver: zodResolver(signinValidation),
@@ -38,6 +38,7 @@ const SignIn = () => {
       email: values.email,
       password: values.password,
     });
+
     if (!session) {
       return toast({
         title: "Sign in failed. please try again.",
@@ -102,7 +103,7 @@ const SignIn = () => {
             )}
           />
           <Button type="submit" className="shad-button_primary">
-            {isPending || isUserLoading ? (
+            {isUserLoading ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>

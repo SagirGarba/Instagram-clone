@@ -1,4 +1,5 @@
 export type IContextType ={
+  imageUrl: string;
   user: IUser;
   isLoading: boolean;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
