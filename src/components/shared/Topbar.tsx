@@ -8,7 +8,7 @@ const Topbar = () => {
   const { mutate: signOut, isSuccess } = useSignOutAccount();
 
   const navigate = useNavigate();
-  const user = useUserContext();
+  const { user } = useUserContext();
   useEffect(() => {
     if (isSuccess) navigate(0);
   }, [isSuccess]);
@@ -26,7 +26,7 @@ const Topbar = () => {
         <div className="flex gap-4">
           <Button
             variant="ghost"
-            className="shad-button_cn"
+            className="shad-button_ghost"
             onClick={() => signOut()}
           >
             <img src="/assets/icons/logout.svg" alt="logout" />

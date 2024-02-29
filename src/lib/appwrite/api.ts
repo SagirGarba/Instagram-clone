@@ -20,7 +20,6 @@ export async function createUserAccount(user :INewUser) {
             accountId: newAccount.$id,
             name: newAccount.name,
             email: newAccount.email,
-            username: user.username,
             imageUrl: avaterURL,
         })
         return newUser;
