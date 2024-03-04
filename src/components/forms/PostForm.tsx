@@ -19,18 +19,22 @@ import { Models } from "appwrite";
 import { useCreatePost } from "../../lib/react-query/queriesAndMutations";
 import { useUserContext } from "../../context/AuthContext";
 import { useToast } from "../ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
-type postFormProps = {
+type PostFormProps = {
   post?: Models.Document;
 };
 
-const PostForm = ({ post }: postFormProps) => {
+const PostForm = ({ post }: PostFormProps) => {
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
 
-  const user = useUserContext();
-  const toast = useToast();
+  const { user } = useUserContext();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   // 1. Define your form.
+
   const form = useForm<z.infer<typeof postValidation>>({
     resolver: zodResolver(postValidation),
     defaultValues: {
@@ -42,7 +46,7 @@ const PostForm = ({ post }: postFormProps) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof postValidation>) {
+  async function onSubmit(values: z.infer<typeof postValidation>) {
     const newPost = await createPost({
       ...values,
       userId: user.id,
@@ -54,9 +58,7 @@ const PostForm = ({ post }: postFormProps) => {
       });
     }
 
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    navigate("/");
   }
 
   return (
