@@ -14,7 +14,7 @@ import {
 import { Textarea } from "../ui/textarea";
 import FileUploader from "../shared/FileUploader";
 import { Input } from "../ui/input";
-import { postValidation } from "../../lib/validation";
+import { PostValidation } from "../../lib/validation";
 import { Models } from "appwrite";
 import { useCreatePost } from "../../lib/react-query/queriesAndMutations";
 import { useUserContext } from "../../context/AuthContext";
@@ -35,18 +35,18 @@ const PostForm = ({ post }: PostFormProps) => {
 
   // 1. Define your form.
 
-  const form = useForm<z.infer<typeof postValidation>>({
-    resolver: zodResolver(postValidation),
+  const form = useForm<z.infer<typeof PostValidation>>({
+    resolver: zodResolver(PostValidation),
     defaultValues: {
-      caption: post ? post.caption : "",
+      caption: post ? post?.caption : "",
       file: [],
       location: post ? post?.location : "",
-      tags: post ? post.tags.joint(",") : "",
+      tags: post ? post.tags.join(",") : "",
     },
   });
 
   // 2. Define a submit handler.
-  async function onSubmit(values: z.infer<typeof postValidation>) {
+  async function onSubmit(values: z.infer<typeof PostValidation>) {
     const newPost = await createPost({
       ...values,
       userId: user.id,
