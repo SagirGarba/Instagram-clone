@@ -14,13 +14,13 @@ export async function createUserAccount(user :INewUser) {
         if(!newAccount) throw Error;
 
 
-        const avaterURL = avatars.getInitials(user.name)
+        const avatarUrl = avatars.getInitials(user.name)
 
         const newUser = await saveUserToDB({
             accountId: newAccount.$id,
             name: newAccount.name,
             email: newAccount.email,
-            imageUrl: avaterURL,
+            imageUrl: avatarUrl,
         })
         return newUser;
     }
@@ -98,8 +98,8 @@ export async function createPost(post: INewPost){
         //GetFile URL
 
         const fileUrl = getFilePreview(uploadedFile.$id) 
-        if(!fileUrl) {
-            deleteFile(uploadedFile.$id)
+        if (!fileUrl) {
+            await deleteFile(uploadedFile.$id)
             throw Error
         };    
 
@@ -121,16 +121,19 @@ export async function createPost(post: INewPost){
             }
         );
 
-        if(!newPost) {
+        if (!newPost) {
             await deleteFile(uploadedFile.$id);
             throw Error;
+          }
+      
+          return newPost;
+        } catch (error) {
+          console.log(error);
         }
+      }
 
-        return newPost;
-    } catch (error) {
-        console.log(error);
-    }
-}
+
+        
 export async function uploadFile(file: File){
     try {
         const uploadedFile = await storage.createFile(
@@ -144,7 +147,7 @@ export async function uploadFile(file: File){
         console.log(error)
         
     }}
-export async function getFilePreview(fileId: string){
+export function getFilePreview(fileId: string){
     try {
         const fileUrl = storage.getFilePreview(
             appwriteConfig.storageId,
@@ -170,4 +173,16 @@ export async function deleteFile(fileId: string){
         console.log(error)
         
     }
+}
+
+export async function getRecentPosts() {
+    const posts = await databases.listDocuments(
+        appwriteConfig.databaseId,
+        appwriteConfig.postCollectionId,
+        [Query.orderDesc('$createdAt'), Query.limit(20)]
+    )
+
+    if(!posts) throw Error;
+
+        return posts
 }
