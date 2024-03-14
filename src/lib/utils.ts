@@ -5,6 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+
 export function formatDate(isoTimestamp: string): string {
   const currentTime = new Date();
   const timestamp = new Date(isoTimestamp);
@@ -25,3 +26,7 @@ export function formatDate(isoTimestamp: string): string {
       return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
   }
 }
+
+export const checkIsLiked = (likeList: string[], userId: string) => {
+  return likeList.includes(userId);
+};
