@@ -155,6 +155,7 @@ export const useCreateUserAccount = () => {
   // USER QUERIES
   // ============================================================
   
+  
   export const useGetCurrentUser = () => {
     return useQuery({
       queryKey: [QUERY_KEYS.GET_CURRENT_USER],
