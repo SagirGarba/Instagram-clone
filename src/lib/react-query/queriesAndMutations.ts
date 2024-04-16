@@ -1,5 +1,5 @@
 import {useQuery, useMutation, useQueryClient, useInfiniteQuery} from "@tanstack/react-query"
-import { INewPost, INewUser, IUpdatePost } from "../../types"
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "../../types"
 import { createUserAccount, signInAccount, signOutAccount, createPost, getRecentPosts, likePost, savePost, deleteSavedPost, getCurrentUser, getPostById, updatePost, deletePost, getUserPosts, searchPosts, getInfinitePosts, } from "../appwrite/api"
 import { QUERY_KEYS } from "./queryKey"
 
@@ -21,10 +21,6 @@ export const useCreateUserAccount = () => {
       mutationFn: signOutAccount,
     });
   };
-  
-  // ============================================================
-  // POST QUERIES
-  // ============================================================
 
   
   export const useGetRecentPosts = () => {
@@ -174,12 +170,6 @@ export const useCreateUserAccount = () => {
     })
   }
 
-   
-  
-  // ============================================================
-  // USER QUERIES
-  // ============================================================
-  
   
   export const useGetCurrentUser = () => {
     return useQuery({
@@ -188,4 +178,32 @@ export const useCreateUserAccount = () => {
     });
   };
   
+  export const useGetUsers = (limit?: number) => {
+    return useQuery({
+      queryKey: [QUERY_KEYS.GET_USERS],
+      queryFn: () => getUsers(limit),
+    });
+  };
   
+  export const useGetUserById = (userId: string) => {
+    return useQuery({
+      queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
+      queryFn: () => getUserById(userId),
+      enabled: !!userId,
+    });
+  };
+  
+  export const useUpdateUser = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: (user: IUpdateUser) => updateUser(user),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_CURRENT_USER],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.GET_USER_BY_ID, data?.$id],
+        });
+      },
+    });
+  };

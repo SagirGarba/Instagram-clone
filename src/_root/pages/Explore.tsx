@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../../components/ui/input";
 import GridPostList from "../../components/shared/GridPostList";
 import SearchResults from "../../components/shared/SearchResults";
@@ -8,8 +8,10 @@ import {
   useSearchPosts,
 } from "../../lib/react-query/queriesAndMutations";
 import Loader from "../../components/shared/Loader";
+import { useInView } from "react-intersection-observer";
 
 const Explore = () => {
+  const { ref, inView } = useInView();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
 
   const [searchValue, setSearchValue] = useState("");
@@ -18,6 +20,10 @@ const Explore = () => {
 
   const { data: searchedPosts, isFetching: isSearchFetching } =
     useSearchPosts(debouncedValue);
+
+  useEffect(() => {
+    if (inView && !searchValue) fetchNextPage();
+  }, [inView, searchValue]);
 
   if (!posts) {
     return (
