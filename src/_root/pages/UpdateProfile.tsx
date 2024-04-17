@@ -45,8 +45,7 @@ const UpdateProfile = () => {
 
   // Queries
   const { data: currentUser } = useGetUserById(id || "");
-  const { mutateAsync: updateUser, isLoading: isLoadingUpdate } =
-    useUpdateUser();
+  const { mutateAsync: updateUser } = useUpdateUser();
 
   if (!currentUser)
     return (
@@ -196,9 +195,8 @@ const UpdateProfile = () => {
               <Button
                 type="submit"
                 className="shad-button_primary whitespace-nowrap"
-                disabled={isLoadingUpdate}
               >
-                {isLoadingUpdate && <Loader />}
+                {<Loader />}
                 Update Profile
               </Button>
             </div>
